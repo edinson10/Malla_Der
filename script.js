@@ -75,19 +75,29 @@ const malla = {
   ]
 };
 
-// ----- Renderizado en la página -----
+// ----- Renderizado de la Malla -----
 const contenedor = document.getElementById("malla");
-const estados = {}; // Guarda si el ramo está aprobado
+const estados = {}; // estado de cada ramo
+const requisitosInversos = {}; // mapeo de "quién lo habilita"
 
+// Generamos estructura visual
 for (let semestre in malla) {
   const divSemestre = document.createElement("div");
   divSemestre.className = "semestre";
   divSemestre.innerHTML = `<h2>${semestre}</h2>`;
 
   malla[semestre].forEach(ramo => {
-    estados[ramo.nombre] = false; // inicial
+    estados[ramo.nombre] = false;
+
+    // Guardar inversamente quién abre a quién
+    ramo.abre.forEach(dep => {
+      if (!requisitosInversos[dep]) requisitosInversos[dep] = [];
+      requisitosInversos[dep].push(ramo.nombre);
+    });
+
     const divRamo = document.createElement("div");
     divRamo.className = "ramo bloqueado";
+    divRamo.dataset.nombre = ramo.nombre;
     divRamo.innerHTML = `
       <label>
         <input type="checkbox" disabled> ${ramo.nombre}
@@ -98,10 +108,10 @@ for (let semestre in malla) {
   contenedor.appendChild(divSemestre);
 }
 
-// Desbloquear ramos iniciales (sin requisitos inversos)
+// Desbloquear los ramos iniciales (sin requisitos)
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
-    const nombre = div.textContent.trim();
+    const nombre = div.dataset.nombre;
     const tieneRequisito = Object.values(malla).flat().some(r =>
       r.abre.includes(nombre)
     );
@@ -112,32 +122,36 @@ function desbloquearIniciales() {
   });
 }
 
-// Lógica de aprobación y desbloqueo
+// Verificar si un ramo puede desbloquearse
+function puedeDesbloquear(ramo) {
+  const requisitos = Object.keys(requisitosInversos).filter(req =>
+    requisitosInversos[req].includes(ramo)
+  );
+  return requisitos.every(req => estados[req] === true);
+}
+
+// Actualizar estados y desbloquear dependientes
 function actualizar() {
   document.querySelectorAll(".ramo input").forEach(input => {
-    const nombre = input.parentElement.textContent.trim();
     input.addEventListener("change", () => {
+      const nombre = input.parentElement.parentElement.dataset.nombre;
       estados[nombre] = input.checked;
+
       if (input.checked) {
         input.parentElement.parentElement.classList.add("aprobado");
-        // Desbloquear dependientes
-        for (let semestre in malla) {
-          malla[semestre].forEach(r => {
-            if (r.abre.includes(nombre) || r.abre.includes(nombre.trim())) {
-              const ramoDiv = [...document.querySelectorAll(".ramo")]
-                .find(div => div.textContent.trim() === r.nombre);
-              if (ramoDiv) {
-                ramoDiv.classList.remove("bloqueado");
-                ramoDiv.querySelector("input").disabled = false;
-              }
-            }
-          });
-        }
       }
+
+      // Intentar desbloquear todos los ramos pendientes
+      document.querySelectorAll(".ramo").forEach(div => {
+        const nombreRamo = div.dataset.nombre;
+        if (puedeDesbloquear(nombreRamo)) {
+          div.classList.remove("bloqueado");
+          div.querySelector("input").disabled = false;
+        }
+      });
     });
   });
 }
 
 desbloquearIniciales();
 actualizar();
-
