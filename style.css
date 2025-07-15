@@ -6,7 +6,21 @@ body {
   padding: 0;
 }
 
-/* Contenedor de la malla (con scroll horizontal) */
+/* Título principal */
+header {
+  text-align: center;
+  background-color: #fff0f6;
+  padding: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  color: #8a4f6b;
+  font-size: 24px;
+  margin: 0;
+}
+
+/* Contenedor de la malla */
 #malla {
   display: flex;
   overflow-x: auto;
@@ -16,7 +30,7 @@ body {
 
 /* Cada semestre */
 .semestre {
-  background: #fff0f6; /* Rosa pastel un poco más intenso para diferenciar */
+  background: #fff0f6;
   border-radius: 10px;
   padding: 15px;
   min-width: 200px;
@@ -33,7 +47,7 @@ body {
 
 /* Ramos */
 .ramo {
-  background: #ffb6c1; /* Rosa pastel para ramos disponibles */
+  background: #ffb6c1;
   border-radius: 8px;
   padding: 8px;
   margin: 5px 0;
@@ -46,15 +60,26 @@ body {
 
 /* Ramo aprobado */
 .ramo.aprobado {
-  background: #b566d0; /* Morado */
+  background: #b566d0;
   color: white;
   text-decoration: line-through;
 }
 
 /* Ramo bloqueado */
 .ramo.bloqueado {
-  background: #d3d3d3; /* Gris */
+  background: #d3d3d3;
   color: #666;
   text-decoration: none;
   cursor: not-allowed;
 }
+
+/* Footer */
+footer {
+  text-align: center;
+  background-color: #fff0f6;
+  padding: 15px 0;
+  margin-top: 30px; /* Salto visual (simula salto de página) */
+  color: #8a4f6b;
+  font-weight: bold;
+}
+
