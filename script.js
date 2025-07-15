@@ -77,7 +77,17 @@ const malla = {
 
 // ----- Variables Globales -----
 const contenedor = document.getElementById("malla");
-const estados = {}; // Estado aprobado/no aprobado de cada ramo
+let estados = {}; // Estado aprobado/no aprobado de cada ramo
+
+// ----- Cargar progreso guardado -----
+if (localStorage.getItem("mallaEstados")) {
+  estados = JSON.parse(localStorage.getItem("mallaEstados"));
+}
+
+// ----- Guardar progreso -----
+function guardarProgreso() {
+  localStorage.setItem("mallaEstados", JSON.stringify(estados));
+}
 
 // ----- Renderizado Visual -----
 for (let semestre in malla) {
@@ -86,7 +96,7 @@ for (let semestre in malla) {
   divSemestre.innerHTML = `<h2>${semestre}</h2>`;
 
   malla[semestre].forEach(ramo => {
-    estados[ramo.nombre] = false;
+    if (!(ramo.nombre in estados)) estados[ramo.nombre] = false;
     const divRamo = document.createElement("div");
     divRamo.className = "ramo bloqueado";
     divRamo.dataset.nombre = ramo.nombre;
@@ -110,27 +120,16 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Buscar el prerrequisito más antiguo (primer nivel) -----
-function esPrerrequisitoInicial(ramoNombre) {
-  // Un prerrequisito inicial es el que no tiene otros prerrequisitos que lo habiliten
-  return !Object.values(malla)
-    .flat()
-    .some(r => r.abre.includes(ramoNombre));
-}
-
-// ----- Bloquear en cascada, dejando solo el prerrequisito inicial activo -----
+// ----- Bloquear en cascada -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
         const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
         if (div && estados[ramo.nombre]) {
-          // Si no es un prerrequisito inicial, lo desactivamos
-          if (!esPrerrequisitoInicial(ramo.nombre)) {
-            estados[ramo.nombre] = false;
-            div.classList.add("bloqueado");
-            div.classList.remove("aprobado");
-          }
+          estados[ramo.nombre] = false;
+          div.classList.add("bloqueado");
+          div.classList.remove("aprobado");
           bloquearCascada(ramo.nombre);
         }
       }
@@ -151,8 +150,15 @@ function actualizarDesbloqueos() {
 // ----- Eventos (clic en la caja) -----
 function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
+    const nombre = div.dataset.nombre;
+
+    // Restaurar estado guardado
+    if (estados[nombre]) {
+      div.classList.remove("bloqueado");
+      div.classList.add("aprobado");
+    }
+
     div.addEventListener("click", () => {
-      const nombre = div.dataset.nombre;
       if (div.classList.contains("bloqueado")) return;
 
       estados[nombre] = !estados[nombre];
@@ -163,6 +169,7 @@ function agregarEventos() {
         div.classList.remove("aprobado");
         bloquearCascada(nombre);
       }
+      guardarProgreso();
     });
   });
 }
@@ -174,7 +181,7 @@ function desbloquearIniciales() {
     const tieneRequisito = Object.values(malla).flat().some(r =>
       r.abre.includes(nombre)
     );
-    if (!tieneRequisito) {
+    if (!tieneRequisito && !estados[nombre]) {
       div.classList.remove("bloqueado");
     }
   });
@@ -182,6 +189,6 @@ function desbloquearIniciales() {
 
 // ----- Inicialización -----
 desbloquearIniciales();
+actualizarDesbloqueos();
 agregarEventos();
-
 
