@@ -106,14 +106,15 @@ function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ Bloquea solo dependientes que pierden requisitos (NO toca estados aprobados previos)
-function bloquearDependientes(ramoBase) {
+// ✅ Bloquea solo desde el ramo desmarcado hacia adelante en cadena
+function bloquearEnCadena(ramoBase) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoBase)) {
+        // Si ya no cumple requisitos, lo desmarcamos y seguimos en cadena
         if (!requisitosCumplidos(ramo.nombre)) {
-          estados[ramo.nombre] = false; // solo si ya no cumple requisitos
-          bloquearDependientes(ramo.nombre);
+          estados[ramo.nombre] = false;
+          bloquearEnCadena(ramo.nombre);
         }
       }
     });
@@ -126,9 +127,9 @@ function actualizarVisual() {
     div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
-      div.classList.add("aprobado"); // aprobado → morado y tachado
+      div.classList.add("aprobado");
     } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-      div.classList.add("bloqueado"); // bloqueado → gris
+      div.classList.add("bloqueado");
     }
   });
 }
@@ -155,7 +156,7 @@ for (let semestre in malla) {
       estados[ramo.nombre] = !estados[ramo.nombre];
 
       if (!estados[ramo.nombre]) {
-        bloquearDependientes(ramo.nombre);
+        bloquearEnCadena(ramo.nombre);
       }
 
       actualizarVisual();
