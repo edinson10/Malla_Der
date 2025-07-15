@@ -118,33 +118,40 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear en cascada -----
+// ----- Bloquear dependientes en cascada -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
-        if (estados[ramo.nombre]) {
+        const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
+        if (div && estados[ramo.nombre]) {
           estados[ramo.nombre] = false;
-          const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
+        }
+        if (div) {
           div.classList.add("bloqueado");
           div.classList.remove("aprobado");
-          bloquearCascada(ramo.nombre);
         }
+        bloquearCascada(ramo.nombre);
       }
     });
   }
 }
 
-// ----- Actualizar visualmente en tiempo real -----
+// ----- Actualizar visual -----
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
-    div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
       div.classList.add("aprobado");
-    } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-      div.classList.add("bloqueado");
+      div.classList.remove("bloqueado");
+    } else {
+      div.classList.remove("aprobado");
+      if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
+        div.classList.add("bloqueado");
+      } else {
+        div.classList.remove("bloqueado");
+      }
     }
   });
 }
@@ -159,7 +166,7 @@ function actualizarDesbloqueos() {
   });
 }
 
-// ----- Es un ramo inicial (sin requisitos) -----
+// ----- Es inicial -----
 function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
@@ -169,7 +176,6 @@ function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
 
-    // Restaurar estados al cargar
     if (estados[nombre]) {
       div.classList.add("aprobado");
       div.classList.remove("bloqueado");
@@ -180,14 +186,10 @@ function agregarEventos() {
 
       estados[nombre] = !estados[nombre];
 
-      if (estados[nombre]) {
-        div.classList.add("aprobado");
-      } else {
-        div.classList.remove("aprobado");
+      if (!estados[nombre]) {
         bloquearCascada(nombre);
       }
 
-      actualizarDesbloqueos();
       actualizarVisual();
       guardarProgreso();
     });
@@ -208,4 +210,3 @@ function desbloquearIniciales() {
 desbloquearIniciales();
 actualizarVisual();
 agregarEventos();
-
