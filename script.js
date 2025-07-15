@@ -1,70 +1,143 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #ffeef8;
-  color: #5a4a54;
-  text-align: center;
-  padding: 20px;
+// ----- Definición de la Malla -----
+const malla = {
+  "Primer Año - Primer Semestre": [
+    { nombre: "Instituciones Políticas y Derecho Constitucional Orgánico", abre: ["Teoría de los Derechos y Acciones Constitucionales"] },
+    { nombre: "Derecho Romano", abre: ["Fundamentos del Derecho Privado"] },
+    { nombre: "Introducción al Derecho", abre: ["Interpretación y Argumentación"] },
+    { nombre: "Historia del Derecho", abre: ["Interpretación y Argumentación"] },
+    { nombre: "Habilidades Comunicativas", abre: ["Pensamiento Crítico"] }
+  ],
+  "Primer Año - Segundo Semestre": [
+    { nombre: "Teoría de los Derechos y Acciones Constitucionales", abre: ["Derechos Fundamentales"] },
+    { nombre: "Fundamentos del Derecho Privado", abre: ["Negocio Jurídico y Teoría General de las Obligaciones"] },
+    { nombre: "Interpretación y Argumentación", abre: ["Ética Profesional"] },
+    { nombre: "Nociones de Economía", abre: ["Fundamentos del Derecho Comercial y Títulos de Crédito"] },
+    { nombre: "Inglés I", abre: ["Inglés II"] }
+  ],
+  "Segundo Año - Tercer Semestre": [
+    { nombre: "Derechos Fundamentales", abre: ["Derecho Internacional Público"] },
+    { nombre: "Negocio Jurídico y Teoría General de las Obligaciones", abre: ["Derecho de los Bienes"] },
+    { nombre: "Derecho Procesal Parte General", abre: ["Normas Comunes a Todo Procedimiento"] },
+    { nombre: "Pensamiento Crítico", abre: [] },
+    { nombre: "Inglés II", abre: ["Inglés III"] }
+  ],
+  "Segundo Año - Cuarto Semestre": [
+    { nombre: "Derecho Internacional Público", abre: ["Derecho Administrativo I"] },
+    { nombre: "Derecho de los Bienes", abre: ["Cumplimiento e Incumplimiento de las Obligaciones Contractuales"] },
+    { nombre: "Normas Comunes a Todo Procedimiento", abre: ["Procedimientos Declarativos"] },
+    { nombre: "Fundamentos del Derecho Comercial y Títulos de Crédito", abre: ["Principios Fundamentales del Derecho Penal y de la Pena"] },
+    { nombre: "Inglés III", abre: ["Inglés IV"] }
+  ],
+  "Tercer Año - Quinto Semestre": [
+    { nombre: "Derecho Administrativo I", abre: ["Derecho Administrativo II"] },
+    { nombre: "Cumplimiento e Incumplimiento de las Obligaciones Contractuales", abre: ["Responsabilidad Extracontractual"] },
+    { nombre: "Procedimientos Declarativos", abre: ["Ejecución y Recursos"] },
+    { nombre: "Principios Fundamentales del Derecho Penal y de la Pena", abre: ["Parte General del Derecho Penal"] },
+    { nombre: "Seminario de Integración", abre: ["Consultorio Jurídico II"] },
+    { nombre: "Inglés IV", abre: [] }
+  ],
+  "Tercer Año - Sexto Semestre": [
+    { nombre: "Derecho Administrativo II", abre: [] },
+    { nombre: "Responsabilidad Extracontractual", abre: ["Contratos"] },
+    { nombre: "Ejecución y Recursos", abre: ["Derecho Procesal Penal"] },
+    { nombre: "Parte General del Derecho Penal", abre: ["Parte Especial del Derecho Penal"] },
+    { nombre: "Derecho Societario", abre: ["Derecho, Innovación y Tecnología"] },
+    { nombre: "Derecho Laboral", abre: ["Derecho, Innovación y Tecnología"] }
+  ],
+  "Cuarto Año - Séptimo Semestre": [
+    { nombre: "Derecho Tributario", abre: [] },
+    { nombre: "Contratos", abre: ["Derecho de Familia"] },
+    { nombre: "Derecho Procesal Penal", abre: [] },
+    { nombre: "Parte Especial del Derecho Penal", abre: [] },
+    { nombre: "Derecho, Innovación y Tecnología", abre: [] },
+    { nombre: "Destrezas de Asesoría Legal", abre: ["Redacción Forense", "Negociación y Mediación", "Litigación Oral"] }
+  ],
+  "Cuarto Año - Octavo Semestre": [
+    { nombre: "Ética Profesional", abre: ["Seminario de Investigación", "Derecho, Género e Inclusión"] },
+    { nombre: "Derecho de Familia", abre: ["Derecho Sucesorio"] },
+    { nombre: "Redacción Forense", abre: ["Consultorio Jurídico I"] },
+    { nombre: "Negociación y Mediación", abre: ["Consultorio Jurídico I"] },
+    { nombre: "Litigación Oral", abre: ["Consultorio Jurídico I"] }
+  ],
+  "Quinto Año - Noveno Semestre": [
+    { nombre: "Electivo I", abre: ["Electivo II", "Electivo III", "Electivo IV"] },
+    { nombre: "Derecho Sucesorio", abre: [] },
+    { nombre: "Seminario de Investigación", abre: [] },
+    { nombre: "Derecho, Género e Inclusión", abre: [] },
+    { nombre: "Consultorio Jurídico I", abre: [] }
+  ],
+  "Quinto Año - Décimo Semestre": [
+    { nombre: "Electivo II", abre: [] },
+    { nombre: "Electivo III", abre: [] },
+    { nombre: "Electivo IV", abre: [] },
+    { nombre: "Consultorio Jurídico II", abre: [] },
+    { nombre: "Actividad Final de Graduación", abre: [] }
+  ]
+};
+
+// ----- Renderizado en la página -----
+const contenedor = document.getElementById("malla");
+const estados = {}; // Guarda si el ramo está aprobado
+
+for (let semestre in malla) {
+  const divSemestre = document.createElement("div");
+  divSemestre.className = "semestre";
+  divSemestre.innerHTML = `<h2>${semestre}</h2>`;
+
+  malla[semestre].forEach(ramo => {
+    estados[ramo.nombre] = false; // inicial
+    const divRamo = document.createElement("div");
+    divRamo.className = "ramo bloqueado";
+    divRamo.innerHTML = `
+      <label>
+        <input type="checkbox" disabled> ${ramo.nombre}
+      </label>`;
+    divSemestre.appendChild(divRamo);
+  });
+
+  contenedor.appendChild(divSemestre);
 }
 
-h1 {
-  color: #ff6fb5;
-  text-shadow: 1px 1px #ffcde4;
+// Desbloquear ramos iniciales (sin requisitos inversos)
+function desbloquearIniciales() {
+  document.querySelectorAll(".ramo").forEach(div => {
+    const nombre = div.textContent.trim();
+    const tieneRequisito = Object.values(malla).flat().some(r =>
+      r.abre.includes(nombre)
+    );
+    if (!tieneRequisito) {
+      div.classList.remove("bloqueado");
+      div.querySelector("input").disabled = false;
+    }
+  });
 }
 
-.indicaciones {
-  color: #b35685;
-  font-size: 14px;
-  margin-bottom: 20px;
+// Lógica de aprobación y desbloqueo
+function actualizar() {
+  document.querySelectorAll(".ramo input").forEach(input => {
+    const nombre = input.parentElement.textContent.trim();
+    input.addEventListener("change", () => {
+      estados[nombre] = input.checked;
+      if (input.checked) {
+        input.parentElement.parentElement.classList.add("aprobado");
+        // Desbloquear dependientes
+        for (let semestre in malla) {
+          malla[semestre].forEach(r => {
+            if (r.abre.includes(nombre) || r.abre.includes(nombre.trim())) {
+              const ramoDiv = [...document.querySelectorAll(".ramo")]
+                .find(div => div.textContent.trim() === r.nombre);
+              if (ramoDiv) {
+                ramoDiv.classList.remove("bloqueado");
+                ramoDiv.querySelector("input").disabled = false;
+              }
+            }
+          });
+        }
+      }
+    });
+  });
 }
 
-.semestre {
-  background: #fff0f6;
-  border: 2px solid #ffcde4;
-  border-radius: 15px;
-  padding: 10px;
-  margin: 15px auto;
-  width: 320px;
-  text-align: left;
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
-}
-
-.semestre h2 {
-  color: #ff6fb5;
-  text-align: center;
-  font-size: 18px;
-}
-
-.ramo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border: 1px solid #ffcde4;
-  border-radius: 10px;
-  padding: 8px;
-  margin: 5px 0;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.ramo:hover {
-  background: #ffe0ef;
-}
-
-.ramo input[type="checkbox"] {
-  accent-color: #ff6fb5;
-  transform: scale(1.3);
-}
-
-.ramo.bloqueado {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.ramo.aprobado {
-  background: #ffd4e8;
-  border-color: #ff6fb5;
-  font-weight: bold;
-  color: #5a3050;
-}
+desbloquearIniciales();
+actualizar();
 
