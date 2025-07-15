@@ -97,7 +97,6 @@ for (let semestre in malla) {
 
   malla[semestre].forEach(ramo => {
     if (!(ramo.nombre in estados)) estados[ramo.nombre] = false;
-
     const divRamo = document.createElement("div");
     divRamo.className = "ramo bloqueado";
     divRamo.dataset.nombre = ramo.nombre;
@@ -119,14 +118,14 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear dependientes en cascada -----
+// ----- Bloquear en cascada -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
-        const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
-        if (div && estados[ramo.nombre]) {
+        if (estados[ramo.nombre]) {
           estados[ramo.nombre] = false;
+          const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
           div.classList.add("bloqueado");
           div.classList.remove("aprobado");
           bloquearCascada(ramo.nombre);
@@ -134,6 +133,20 @@ function bloquearCascada(ramoNombre) {
       }
     });
   }
+}
+
+// ----- Actualizar visualmente en tiempo real -----
+function actualizarVisual() {
+  document.querySelectorAll(".ramo").forEach(div => {
+    const nombre = div.dataset.nombre;
+    div.classList.remove("aprobado", "bloqueado");
+
+    if (estados[nombre]) {
+      div.classList.add("aprobado");
+    } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
+      div.classList.add("bloqueado");
+    }
+  });
 }
 
 // ----- Desbloquear ramos si cumplen requisitos -----
@@ -146,6 +159,11 @@ function actualizarDesbloqueos() {
   });
 }
 
+// ----- Es un ramo inicial (sin requisitos) -----
+function esInicial(nombre) {
+  return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
+}
+
 // ----- Eventos en tiempo real -----
 function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
@@ -153,23 +171,25 @@ function agregarEventos() {
 
     // Restaurar estados al cargar
     if (estados[nombre]) {
-      div.classList.remove("bloqueado");
       div.classList.add("aprobado");
+      div.classList.remove("bloqueado");
     }
 
     div.addEventListener("click", () => {
       if (div.classList.contains("bloqueado")) return;
 
       estados[nombre] = !estados[nombre];
+
       if (estados[nombre]) {
         div.classList.add("aprobado");
-        actualizarDesbloqueos();
       } else {
         div.classList.remove("aprobado");
         bloquearCascada(nombre);
-        actualizarDesbloqueos();
       }
-      guardarProgreso(); // Se guarda en tiempo real
+
+      actualizarDesbloqueos();
+      actualizarVisual();
+      guardarProgreso();
     });
   });
 }
@@ -178,10 +198,7 @@ function agregarEventos() {
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
-    const tieneRequisito = Object.values(malla).flat().some(r =>
-      r.abre.includes(nombre)
-    );
-    if (!tieneRequisito && !estados[nombre]) {
+    if (esInicial(nombre) && !estados[nombre]) {
       div.classList.remove("bloqueado");
     }
   });
@@ -189,6 +206,6 @@ function desbloquearIniciales() {
 
 // ----- Inicialización -----
 desbloquearIniciales();
-actualizarDesbloqueos();
+actualizarVisual();
 agregarEventos();
 
