@@ -1,96 +1,61 @@
+/* Fondo general */
 body {
+  background-color: #ffe6f0; /* Rosa pastel claro */
   font-family: Arial, sans-serif;
-  background-color: #ffeef8;
-  color: #5a4a54;
-  text-align: center;
-  padding: 20px;
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
-h1 {
-  color: #ff6fb5;
-  text-shadow: 1px 1px #ffcde4;
-}
-
-.indicaciones {
-  color: #b35685;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-/* ----- CONTENEDOR HORIZONTAL ----- */
-.grid-malla {
+/* Contenedor de la malla */
+#malla {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 15px;
   overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;
+  padding: 20px;
+  gap: 20px;
 }
 
-.grid-malla::-webkit-scrollbar {
-  height: 8px;
-}
-
-.grid-malla::-webkit-scrollbar-thumb {
-  background-color: #ffb6d9;
-  border-radius: 4px;
-}
-
-.grid-malla::-webkit-scrollbar-track {
-  background: #ffeef8;
-}
-
-/* ----- TARJETAS DE SEMESTRES ----- */
+/* Cada semestre */
 .semestre {
-  flex: 0 0 220px;
   background: #fff0f6;
-  border: 2px solid #ffcde4;
-  border-radius: 15px;
-  padding: 10px;
-  text-align: left;
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 200px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Título del semestre */
 .semestre h2 {
-  color: #ff6fb5;
   text-align: center;
   font-size: 16px;
-  margin-bottom: 8px;
+  color: #8a4f6b;
+  margin-bottom: 10px;
 }
 
-/* ----- RAMOS ----- */
+/* Estilos generales de cada ramo */
 .ramo {
-  display: block;
-  background: #ffd6e8;          /* Rosa pastel por defecto (cursable) */
-  border: 1px solid #ffb6d9;
-  border-radius: 10px;
+  background: #ffb6c1; /* Rosa pastel para ramos disponibles */
+  border-radius: 8px;
   padding: 8px;
   margin: 5px 0;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, text-decoration 0.3s ease;
-  font-size: 14px;
   text-align: center;
-  user-select: none;
-  color: #5a4a54;
-}
-
-.ramo:hover {
-  background: #ffcae0;          /* Un poco más intenso al pasar el mouse */
-}
-
-.ramo.bloqueado {
-  background: #d9d9d9;          /* Gris para no cursables */
-  color: #777777;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-.ramo.aprobado {
-  background: #8a63d2;          /* Morado pastel al aprobar */
-  color: #ffffff;               /* Texto blanco */
+  cursor: pointer;
+  transition: 0.3s;
+  color: #5a0033;
   font-weight: bold;
-  text-decoration: line-through; /* Texto tachado */
+}
+
+/* Ramo aprobado */
+.ramo.aprobado {
+  background: #b566d0; /* Morado */
+  color: white;
+  text-decoration: line-through;
+}
+
+/* Ramo bloqueado */
+.ramo.bloqueado {
+  background: #d3d3d3; /* Gris */
+  color: #666;
+  text-decoration: none;
+  cursor: not-allowed;
 }
 
