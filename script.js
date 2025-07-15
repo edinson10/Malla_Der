@@ -1,5 +1,5 @@
 // =======================
-//   DEFINICIÓN DE LA MALLA
+// DEFINICIÓN DE LA MALLA
 // =======================
 const malla = {
   "Primer Año - Primer Semestre": [
@@ -106,19 +106,29 @@ function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ **No cambia el estado de los dependientes aprobados**  
-// Solo recalculamos visualmente si pueden seguir activos.
+// ✅ Bloquea solo dependientes que pierden requisitos (NO toca estados aprobados previos)
+function bloquearDependientes(ramoBase) {
+  for (let semestre in malla) {
+    malla[semestre].forEach(ramo => {
+      if (ramo.abre.includes(ramoBase)) {
+        if (!requisitosCumplidos(ramo.nombre)) {
+          estados[ramo.nombre] = false; // solo si ya no cumple requisitos
+          bloquearDependientes(ramo.nombre);
+        }
+      }
+    });
+  }
+}
+
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
     div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
-      // Sigue aprobado siempre que haya sido marcado manualmente
-      div.classList.add("aprobado");
+      div.classList.add("aprobado"); // aprobado → morado y tachado
     } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-      // No aprobado y sin requisitos → bloqueado
-      div.classList.add("bloqueado");
+      div.classList.add("bloqueado"); // bloqueado → gris
     }
   });
 }
@@ -143,8 +153,13 @@ for (let semestre in malla) {
       if (divRamo.classList.contains("bloqueado") && !estados[ramo.nombre]) return;
 
       estados[ramo.nombre] = !estados[ramo.nombre];
-      guardarProgreso();
+
+      if (!estados[ramo.nombre]) {
+        bloquearDependientes(ramo.nombre);
+      }
+
       actualizarVisual();
+      guardarProgreso();
     });
 
     divSemestre.appendChild(divRamo);
