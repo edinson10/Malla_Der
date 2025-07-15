@@ -89,7 +89,7 @@ function guardarProgreso() {
   localStorage.setItem("mallaEstados", JSON.stringify(estados));
 }
 
-// ----- Renderizado Visual -----
+// ----- Renderizado Visual Inicial -----
 for (let semestre in malla) {
   const divSemestre = document.createElement("div");
   divSemestre.className = "semestre";
@@ -123,13 +123,8 @@ function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
-        const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
-        if (div && estados[ramo.nombre]) {
+        if (estados[ramo.nombre]) {
           estados[ramo.nombre] = false;
-        }
-        if (div) {
-          div.classList.add("bloqueado");
-          div.classList.remove("aprobado");
         }
         bloquearCascada(ramo.nombre);
       }
@@ -137,36 +132,22 @@ function bloquearCascada(ramoNombre) {
   }
 }
 
-// ----- Actualizar visual -----
+// ----- Actualizar toda la visualización -----
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
 
+    div.classList.remove("aprobado", "bloqueado");
+
     if (estados[nombre]) {
       div.classList.add("aprobado");
-      div.classList.remove("bloqueado");
-    } else {
-      div.classList.remove("aprobado");
-      if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-        div.classList.add("bloqueado");
-      } else {
-        div.classList.remove("bloqueado");
-      }
+    } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
+      div.classList.add("bloqueado");
     }
   });
 }
 
-// ----- Desbloquear ramos si cumplen requisitos -----
-function actualizarDesbloqueos() {
-  document.querySelectorAll(".ramo").forEach(div => {
-    const nombre = div.dataset.nombre;
-    if (requisitosCumplidos(nombre) && !estados[nombre]) {
-      div.classList.remove("bloqueado");
-    }
-  });
-}
-
-// ----- Es inicial -----
+// ----- Es un ramo inicial -----
 function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
@@ -210,3 +191,4 @@ function desbloquearIniciales() {
 desbloquearIniciales();
 actualizarVisual();
 agregarEventos();
+
