@@ -110,17 +110,46 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear en cascada (cuando se desmarca un ramo) -----
+// ----- Verificar si un ramo sigue siendo necesario para otro activo -----
+function esNecesarioParaOtro(ramoNombre) {
+  for (let semestre in malla) {
+    for (let ramo of malla[semestre]) {
+      if (ramo.abre.includes(ramoNombre) && estados[ramo.nombre]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ----- Bloquear en cascada y desactivar prerrequisitos -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
         const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
-        if (div) {
+        if (div && estados[ramo.nombre]) {
           estados[ramo.nombre] = false;
           div.classList.add("bloqueado");
           div.classList.remove("aprobado");
-          bloquearCascada(ramo.nombre); // Bloqueo en cadena
+          bloquearCascada(ramo.nombre);
+        }
+      }
+    });
+  }
+
+  // Desactivar prerrequisitos que ya no son necesarios
+  for (let semestre in malla) {
+    malla[semestre].forEach(ramo => {
+      if (ramo.abre.includes(ramoNombre)) {
+        if (!esNecesarioParaOtro(ramo.nombre)) {
+          const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
+          if (div && estados[ramo.nombre]) {
+            estados[ramo.nombre] = false;
+            div.classList.remove("aprobado");
+            div.classList.add("bloqueado");
+            bloquearCascada(ramo.nombre);
+          }
         }
       }
     });
@@ -172,3 +201,4 @@ function desbloquearIniciales() {
 // ----- Inicialización -----
 desbloquearIniciales();
 agregarEventos();
+
