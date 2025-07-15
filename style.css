@@ -1,1 +1,70 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #ffeef8;
+  color: #5a4a54;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #ff6fb5;
+  text-shadow: 1px 1px #ffcde4;
+}
+
+.indicaciones {
+  color: #b35685;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.semestre {
+  background: #fff0f6;
+  border: 2px solid #ffcde4;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 15px auto;
+  width: 320px;
+  text-align: left;
+  box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
+}
+
+.semestre h2 {
+  color: #ff6fb5;
+  text-align: center;
+  font-size: 18px;
+}
+
+.ramo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #ffcde4;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 5px 0;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.ramo:hover {
+  background: #ffe0ef;
+}
+
+.ramo input[type="checkbox"] {
+  accent-color: #ff6fb5;
+  transform: scale(1.3);
+}
+
+.ramo.bloqueado {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ramo.aprobado {
+  background: #ffd4e8;
+  border-color: #ff6fb5;
+  font-weight: bold;
+  color: #5a3050;
+}
 
