@@ -1,87 +1,19 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #ffeef8;
-  color: #5a4a54;
-  text-align: center;
-  padding: 20px;
-  overflow-x: hidden;
-}
-
-h1 {
-  color: #ff6fb5;
-  text-shadow: 1px 1px #ffcde4;
-}
-
-.indicaciones {
-  color: #b35685;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-/* ----- CONTENEDOR HORIZONTAL ----- */
-.grid-malla {
-  display: flex;
-  flex-wrap: nowrap;         /* Todos en una sola fila */
-  gap: 15px;
-  overflow-x: auto;          /* Barra horizontal */
-  overflow-y: hidden;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;   /* Desplazamiento suave */
-}
-
-.grid-malla::-webkit-scrollbar {
-  height: 8px;
-}
-
-.grid-malla::-webkit-scrollbar-thumb {
-  background-color: #ffb6d9;
-  border-radius: 4px;
-}
-
-.grid-malla::-webkit-scrollbar-track {
-  background: #ffeef8;
-}
-
-/* ----- TARJETAS DE SEMESTRES ----- */
-.semestre {
-  flex: 0 0 220px;           /* Ancho fijo por columna */
-  background: #fff0f6;
-  border: 2px solid #ffcde4;
-  border-radius: 15px;
-  padding: 10px;
-  text-align: left;
-  box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
-}
-
-.semestre h2 {
-  color: #ff6fb5;
-  text-align: center;
-  font-size: 16px;
-  margin-bottom: 8px;
-}
-
-/* ----- RAMOS ----- */
 .ramo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: block;
   background: #ffffff;
   border: 1px solid #ffcde4;
   border-radius: 10px;
-  padding: 6px;
-  margin: 4px 0;
+  padding: 8px;
+  margin: 5px 0;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, text-decoration 0.3s ease;
   font-size: 14px;
+  text-align: center;
+  user-select: none;
 }
 
 .ramo:hover {
   background: #ffe0ef;
-}
-
-.ramo input[type="checkbox"] {
-  accent-color: #ff6fb5;
-  transform: scale(1.2);
 }
 
 .ramo.bloqueado {
@@ -90,8 +22,8 @@ h1 {
 }
 
 .ramo.aprobado {
-  background: #ffd4e8;
-  border-color: #ff6fb5;
+  background: #e7d3ff;      /* Morado pastel */
+  color: #5b3ea5;           /* Texto morado */
   font-weight: bold;
-  color: #5a3050;
+  text-decoration: line-through;
 }
