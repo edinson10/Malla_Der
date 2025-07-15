@@ -106,41 +106,18 @@ function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ **Bloquea SOLO los ramos que dependen directa o indirectamente del ramo desmarcado**
-function bloquearDependientes(ramoBase) {
-  for (let semestre in malla) {
-    malla[semestre].forEach(ramo => {
-      // Si este ramo depende directa o indirectamente del ramo desmarcado
-      if (dependeDe(ramo.nombre, ramoBase)) {
-        estados[ramo.nombre] = false;
-        bloquearDependientes(ramo.nombre);
-      }
-    });
-  }
-}
-
-// Verificar si un ramo depende de otro (recursivo)
-function dependeDe(ramo, base) {
-  for (let semestre in malla) {
-    for (let r of malla[semestre]) {
-      if (r.abre.includes(ramo)) {
-        if (r.nombre === base || dependeDe(r.nombre, base)) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
+// ✅ **No cambia el estado de los dependientes aprobados**  
+// Solo recalculamos visualmente si pueden seguir activos.
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
     div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
+      // Sigue aprobado siempre que haya sido marcado manualmente
       div.classList.add("aprobado");
     } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
+      // No aprobado y sin requisitos → bloqueado
       div.classList.add("bloqueado");
     }
   });
@@ -162,18 +139,12 @@ for (let semestre in malla) {
     divRamo.dataset.nombre = ramo.nombre;
     divRamo.textContent = ramo.nombre;
 
-    // Evento de click
     divRamo.addEventListener("click", () => {
       if (divRamo.classList.contains("bloqueado") && !estados[ramo.nombre]) return;
 
       estados[ramo.nombre] = !estados[ramo.nombre];
-
-      if (!estados[ramo.nombre]) {
-        bloquearDependientes(ramo.nombre); // Solo dependientes
-      }
-
-      actualizarVisual();
       guardarProgreso();
+      actualizarVisual();
     });
 
     divSemestre.appendChild(divRamo);
