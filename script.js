@@ -118,19 +118,21 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear solo dependientes -----
+// ----- Bloquear solo dependientes DIRECTOS e INDIRECTOS -----
 function bloquearDependientes(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
-        estados[ramo.nombre] = false;
-        bloquearDependientes(ramo.nombre);
+        if (estados[ramo.nombre]) {
+          estados[ramo.nombre] = false;
+        }
+        bloquearDependientes(ramo.nombre); // solo descendientes
       }
     });
   }
 }
 
-// ----- Actualizar visual en tiempo real -----
+// ----- Actualizar visual -----
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -138,9 +140,9 @@ function actualizarVisual() {
     div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
-      div.classList.add("aprobado"); // Aprobado → morado y tachado
+      div.classList.add("aprobado");
     } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-      div.classList.add("bloqueado"); // Bloqueado → gris
+      div.classList.add("bloqueado");
     }
   });
 }
@@ -155,7 +157,6 @@ function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
 
-    // Restaurar estado guardado
     if (estados[nombre]) {
       div.classList.add("aprobado");
       div.classList.remove("bloqueado");
@@ -167,7 +168,7 @@ function agregarEventos() {
       estados[nombre] = !estados[nombre];
 
       if (!estados[nombre]) {
-        bloquearDependientes(nombre); // SOLO dependientes
+        bloquearDependientes(nombre);
       }
 
       actualizarVisual();
