@@ -63,8 +63,8 @@ h1 {
 /* ----- RAMOS ----- */
 .ramo {
   display: block;
-  background: #ffffff;
-  border: 1px solid #ffcde4;
+  background: #ffd6e8;          /* Rosa pastel por defecto */
+  border: 1px solid #ffb6d9;
   border-radius: 10px;
   padding: 8px;
   margin: 5px 0;
@@ -73,10 +73,12 @@ h1 {
   font-size: 14px;
   text-align: center;
   user-select: none;
+  color: #5a4a54;
+  font-weight: normal;
 }
 
 .ramo:hover {
-  background: #ffe0ef;
+  background: #ffcae0;          /* Un poco más intenso al pasar el mouse */
 }
 
 .ramo.bloqueado {
@@ -85,8 +87,8 @@ h1 {
 }
 
 .ramo.aprobado {
-  background: #8a63d2;      /* Morado pastel */
-  color: #ffffff;           /* Texto blanco */
+  background: #8a63d2;          /* Morado pastel al aprobar */
+  color: #ffffff;               /* Texto blanco */
   font-weight: bold;
-  text-decoration: line-through;
+  text-decoration: line-through; /* Texto tachado */
 }
