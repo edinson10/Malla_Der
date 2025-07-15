@@ -77,7 +77,7 @@ const malla = {
 
 // ----- Variables Globales -----
 const contenedor = document.getElementById("malla");
-let estados = {}; // Estado aprobado/no aprobado de cada ramo
+let estados = {};
 
 // ----- Cargar progreso guardado -----
 if (localStorage.getItem("mallaEstados")) {
@@ -97,6 +97,7 @@ for (let semestre in malla) {
 
   malla[semestre].forEach(ramo => {
     if (!(ramo.nombre in estados)) estados[ramo.nombre] = false;
+
     const divRamo = document.createElement("div");
     divRamo.className = "ramo bloqueado";
     divRamo.dataset.nombre = ramo.nombre;
@@ -112,15 +113,13 @@ function requisitosCumplidos(ramoNombre) {
   const requisitos = [];
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
-      if (ramo.abre.includes(ramoNombre)) {
-        requisitos.push(ramo.nombre);
-      }
+      if (ramo.abre.includes(ramoNombre)) requisitos.push(ramo.nombre);
     });
   }
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear en cascada -----
+// ----- Bloquear dependientes en cascada -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
@@ -147,12 +146,12 @@ function actualizarDesbloqueos() {
   });
 }
 
-// ----- Eventos (clic en la caja) -----
+// ----- Eventos en tiempo real -----
 function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
 
-    // Restaurar estado guardado
+    // Restaurar estados al cargar
     if (estados[nombre]) {
       div.classList.remove("bloqueado");
       div.classList.add("aprobado");
@@ -168,13 +167,14 @@ function agregarEventos() {
       } else {
         div.classList.remove("aprobado");
         bloquearCascada(nombre);
+        actualizarDesbloqueos();
       }
-      guardarProgreso();
+      guardarProgreso(); // Se guarda en tiempo real
     });
   });
 }
 
-// ----- Desbloquear iniciales (sin requisitos) -----
+// ----- Desbloquear iniciales -----
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
