@@ -103,26 +103,35 @@ function requisitosCumplidos(ramoNombre) {
 }
 
 function esInicial(nombre) {
-  return !Object.values(malla)
-    .flat()
-    .some(r => r.abre.includes(nombre));
+  return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ **CORREGIDO: Bloquea SOLO dependientes en la rama correcta**
+// ✅ **SOLO dependientes (sin tocar prerrequisitos)**
 function bloquearDependientes(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
-      if (ramo.abre.includes(ramoNombre)) {
-        if (estados[ramo.nombre]) {
-          estados[ramo.nombre] = false;
-        }
+      if (ramosDependenDe(ramo.nombre, ramoNombre)) {
+        estados[ramo.nombre] = false;
         bloquearDependientes(ramo.nombre);
       }
     });
   }
 }
 
-// Actualizar visualización
+// ✅ **Función auxiliar: saber si un ramo depende de otro**
+function ramosDependenDe(ramo, base) {
+  for (let semestre in malla) {
+    for (let r of malla[semestre]) {
+      if (r.abre.includes(ramo)) {
+        if (r.nombre === base || ramosDependenDe(r.nombre, base)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -171,9 +180,6 @@ for (let semestre in malla) {
   contenedor.appendChild(divSemestre);
 }
 
-// =======================
-// INICIALIZACIÓN
-// =======================
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -183,6 +189,9 @@ function desbloquearIniciales() {
   });
 }
 
+// =======================
+// INICIALIZACIÓN
+// =======================
 desbloquearIniciales();
 actualizarVisual();
 
