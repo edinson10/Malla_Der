@@ -78,7 +78,7 @@ const malla = {
 };
 
 // =======================
-// VARIABLES GLOBALES
+// VARIABLES Y LOCALSTORAGE
 // =======================
 const contenedor = document.getElementById("malla");
 let estados = localStorage.getItem("mallaEstados")
@@ -106,11 +106,12 @@ function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ **SOLO dependientes (sin tocar prerrequisitos)**
-function bloquearDependientes(ramoNombre) {
+// ✅ **Bloquea SOLO los ramos que dependen directa o indirectamente del ramo desmarcado**
+function bloquearDependientes(ramoBase) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
-      if (ramosDependenDe(ramo.nombre, ramoNombre)) {
+      // Si este ramo depende directa o indirectamente del ramo desmarcado
+      if (dependeDe(ramo.nombre, ramoBase)) {
         estados[ramo.nombre] = false;
         bloquearDependientes(ramo.nombre);
       }
@@ -118,12 +119,12 @@ function bloquearDependientes(ramoNombre) {
   }
 }
 
-// ✅ **Función auxiliar: saber si un ramo depende de otro**
-function ramosDependenDe(ramo, base) {
+// Verificar si un ramo depende de otro (recursivo)
+function dependeDe(ramo, base) {
   for (let semestre in malla) {
     for (let r of malla[semestre]) {
       if (r.abre.includes(ramo)) {
-        if (r.nombre === base || ramosDependenDe(r.nombre, base)) {
+        if (r.nombre === base || dependeDe(r.nombre, base)) {
           return true;
         }
       }
@@ -161,13 +162,14 @@ for (let semestre in malla) {
     divRamo.dataset.nombre = ramo.nombre;
     divRamo.textContent = ramo.nombre;
 
+    // Evento de click
     divRamo.addEventListener("click", () => {
       if (divRamo.classList.contains("bloqueado") && !estados[ramo.nombre]) return;
 
       estados[ramo.nombre] = !estados[ramo.nombre];
 
       if (!estados[ramo.nombre]) {
-        bloquearDependientes(ramo.nombre);
+        bloquearDependientes(ramo.nombre); // Solo dependientes
       }
 
       actualizarVisual();
@@ -180,6 +182,9 @@ for (let semestre in malla) {
   contenedor.appendChild(divSemestre);
 }
 
+// =======================
+// INICIALIZACIÓN
+// =======================
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -189,9 +194,5 @@ function desbloquearIniciales() {
   });
 }
 
-// =======================
-// INICIALIZACIÓN
-// =======================
 desbloquearIniciales();
 actualizarVisual();
-
