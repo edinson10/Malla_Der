@@ -90,17 +90,14 @@ for (let semestre in malla) {
     const divRamo = document.createElement("div");
     divRamo.className = "ramo bloqueado";
     divRamo.dataset.nombre = ramo.nombre;
-    divRamo.innerHTML = `
-      <label>
-        <input type="checkbox" disabled> ${ramo.nombre}
-      </label>`;
+    divRamo.textContent = ramo.nombre;
     divSemestre.appendChild(divRamo);
   });
 
   contenedor.appendChild(divSemestre);
 }
 
-// ----- Función para verificar requisitos -----
+// ----- Verificar requisitos -----
 function requisitosCumplidos(ramoNombre) {
   const requisitos = [];
   for (let semestre in malla) {
@@ -113,7 +110,7 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear en cascada (al desmarcar) -----
+// ----- Bloquear en cascada -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
@@ -121,12 +118,9 @@ function bloquearCascada(ramoNombre) {
         const div = document.querySelector(`.ramo[data-nombre="${ramo.nombre}"]`);
         if (div) {
           estados[ramo.nombre] = false;
-          const input = div.querySelector("input");
-          input.checked = false;
           div.classList.add("bloqueado");
           div.classList.remove("aprobado");
-          input.disabled = true;
-          // Llamada recursiva para bloquear dependientes en cadena
+          // Bloqueo en cadena
           bloquearCascada(ramo.nombre);
         }
       }
@@ -134,36 +128,36 @@ function bloquearCascada(ramoNombre) {
   }
 }
 
-// ----- Actualizar Desbloqueos en Tiempo Real -----
+// ----- Actualizar Desbloqueos -----
 function actualizarDesbloqueos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
     if (requisitosCumplidos(nombre) && !estados[nombre]) {
       div.classList.remove("bloqueado");
-      div.querySelector("input").disabled = false;
     }
   });
 }
 
-// ----- Eventos de Cambio -----
+// ----- Eventos (clic en la caja) -----
 function agregarEventos() {
-  document.querySelectorAll(".ramo input").forEach(input => {
-    input.addEventListener("change", () => {
-      const nombre = input.parentElement.parentElement.dataset.nombre;
-      estados[nombre] = input.checked;
+  document.querySelectorAll(".ramo").forEach(div => {
+    div.addEventListener("click", () => {
+      const nombre = div.dataset.nombre;
+      if (div.classList.contains("bloqueado")) return;
 
-      if (input.checked) {
-        input.parentElement.parentElement.classList.add("aprobado");
+      estados[nombre] = !estados[nombre];
+      if (estados[nombre]) {
+        div.classList.add("aprobado");
         actualizarDesbloqueos();
       } else {
-        input.parentElement.parentElement.classList.remove("aprobado");
+        div.classList.remove("aprobado");
         bloquearCascada(nombre);
       }
     });
   });
 }
 
-// ----- Desbloquear los ramos iniciales (sin requisitos) -----
+// ----- Desbloquear Iniciales -----
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -172,7 +166,6 @@ function desbloquearIniciales() {
     );
     if (!tieneRequisito) {
       div.classList.remove("bloqueado");
-      div.querySelector("input").disabled = false;
     }
   });
 }
