@@ -97,7 +97,7 @@ for (let semestre in malla) {
   contenedor.appendChild(divSemestre);
 }
 
-// ----- Verificar requisitos -----
+// ----- Verificar si cumple requisitos -----
 function requisitosCumplidos(ramoNombre) {
   const requisitos = [];
   for (let semestre in malla) {
@@ -110,7 +110,7 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear en cascada -----
+// ----- Bloquear en cascada (cuando se desmarca un ramo) -----
 function bloquearCascada(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
@@ -120,15 +120,14 @@ function bloquearCascada(ramoNombre) {
           estados[ramo.nombre] = false;
           div.classList.add("bloqueado");
           div.classList.remove("aprobado");
-          // Bloqueo en cadena
-          bloquearCascada(ramo.nombre);
+          bloquearCascada(ramo.nombre); // Bloqueo en cadena
         }
       }
     });
   }
 }
 
-// ----- Actualizar Desbloqueos -----
+// ----- Desbloquear ramos si cumplen requisitos -----
 function actualizarDesbloqueos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -157,7 +156,7 @@ function agregarEventos() {
   });
 }
 
-// ----- Desbloquear Iniciales -----
+// ----- Desbloquear iniciales (sin requisitos) -----
 function desbloquearIniciales() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
