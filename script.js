@@ -89,7 +89,7 @@ function guardarProgreso() {
   localStorage.setItem("mallaEstados", JSON.stringify(estados));
 }
 
-// ----- Renderizado Visual Inicial -----
+// ----- Renderizado Visual -----
 for (let semestre in malla) {
   const divSemestre = document.createElement("div");
   divSemestre.className = "semestre";
@@ -118,21 +118,19 @@ function requisitosCumplidos(ramoNombre) {
   return requisitos.every(req => estados[req] === true);
 }
 
-// ----- Bloquear dependientes en cascada -----
-function bloquearCascada(ramoNombre) {
+// ----- Bloquear solo dependientes -----
+function bloquearDependientes(ramoNombre) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoNombre)) {
-        if (estados[ramo.nombre]) {
-          estados[ramo.nombre] = false;
-        }
-        bloquearCascada(ramo.nombre);
+        estados[ramo.nombre] = false;
+        bloquearDependientes(ramo.nombre);
       }
     });
   }
 }
 
-// ----- Actualizar toda la visualización -----
+// ----- Actualizar visual en tiempo real -----
 function actualizarVisual() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
@@ -140,14 +138,14 @@ function actualizarVisual() {
     div.classList.remove("aprobado", "bloqueado");
 
     if (estados[nombre]) {
-      div.classList.add("aprobado");
+      div.classList.add("aprobado"); // Aprobado → morado y tachado
     } else if (!requisitosCumplidos(nombre) && !esInicial(nombre)) {
-      div.classList.add("bloqueado");
+      div.classList.add("bloqueado"); // Bloqueado → gris
     }
   });
 }
 
-// ----- Es un ramo inicial -----
+// ----- Es inicial (sin requisitos) -----
 function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
@@ -157,6 +155,7 @@ function agregarEventos() {
   document.querySelectorAll(".ramo").forEach(div => {
     const nombre = div.dataset.nombre;
 
+    // Restaurar estado guardado
     if (estados[nombre]) {
       div.classList.add("aprobado");
       div.classList.remove("bloqueado");
@@ -168,7 +167,7 @@ function agregarEventos() {
       estados[nombre] = !estados[nombre];
 
       if (!estados[nombre]) {
-        bloquearCascada(nombre);
+        bloquearDependientes(nombre); // SOLO dependientes
       }
 
       actualizarVisual();
@@ -191,4 +190,3 @@ function desbloquearIniciales() {
 desbloquearIniciales();
 actualizarVisual();
 agregarEventos();
-
