@@ -1,73 +1,83 @@
 // =======================
-// DEFINICIÓN DE LA MALLA
+// MALLA ACTUALIZADA SEGÚN NUEVA INFORMACIÓN
 // =======================
 const malla = {
   "Primer Año - Primer Semestre": [
-    { nombre: "Instituciones Políticas y Derecho Constitucional Orgánico", abre: ["Teoría de los Derechos y Acciones Constitucionales"] },
-    { nombre: "Derecho Romano", abre: ["Fundamentos del Derecho Privado"] },
-    { nombre: "Introducción al Derecho", abre: ["Interpretación y Argumentación"] },
-    { nombre: "Historia del Derecho", abre: ["Interpretación y Argumentación"] },
-    { nombre: "Habilidades Comunicativas", abre: ["Pensamiento Crítico"] }
+    { nombre: "Instituciones Políticas y Derecho Constitucional Orgánico", abre: ["Derecho Internacional Público", "Derecho Administrativo I"] },
+    { nombre: "Derecho Romano", abre: ["Seminario de Integración"] },
+    { nombre: "Introducción al Derecho", abre: ["Seminario de Integración"] },
+    { nombre: "Historia del Derecho", abre: ["Seminario de Integración"] },
+    { nombre: "Habilidades Comunicativas", abre: ["Seminario de Doctrina y Jurisprudencia"] }
   ],
+
   "Primer Año - Segundo Semestre": [
     { nombre: "Teoría de los Derechos y Acciones Constitucionales", abre: ["Derechos Fundamentales"] },
     { nombre: "Fundamentos del Derecho Privado", abre: ["Negocio Jurídico y Teoría General de las Obligaciones"] },
-    { nombre: "Interpretación y Argumentación", abre: ["Ética Profesional"] },
-    { nombre: "Nociones de Economía", abre: ["Fundamentos del Derecho Comercial y Títulos de Crédito"] },
+    { nombre: "Interpretación y Argumentación", abre: ["Seminario de Integración"] },
+    { nombre: "Nociones de Economía", abre: ["Seminario de Integración"] },
     { nombre: "Inglés I", abre: ["Inglés II"] }
   ],
+
   "Segundo Año - Tercer Semestre": [
-    { nombre: "Derechos Fundamentales", abre: ["Derecho Internacional Público"] },
+    { nombre: "Derechos Fundamentales", abre: ["Seminario de Integración", "Derecho, Género e Inclusión", "Principios Fundamentales del Derecho Penal y de la Pena"] },
     { nombre: "Negocio Jurídico y Teoría General de las Obligaciones", abre: ["Derecho de los Bienes"] },
     { nombre: "Derecho Procesal Parte General", abre: ["Normas Comunes a Todo Procedimiento"] },
-    { nombre: "Pensamiento Crítico", abre: [] },
+    { nombre: "Pensamiento Crítico", abre: ["Seminario de Integración"] },
     { nombre: "Inglés II", abre: ["Inglés III"] }
   ],
+
   "Segundo Año - Cuarto Semestre": [
-    { nombre: "Derecho Internacional Público", abre: ["Derecho Administrativo I"] },
-    { nombre: "Derecho de los Bienes", abre: ["Cumplimiento e Incumplimiento de las Obligaciones Contractuales"] },
-    { nombre: "Normas Comunes a Todo Procedimiento", abre: ["Procedimientos Declarativos"] },
-    { nombre: "Fundamentos del Derecho Comercial y Títulos de Crédito", abre: ["Principios Fundamentales del Derecho Penal y de la Pena"] },
+    { nombre: "Derecho Internacional Público", abre: ["Seminario de Integración"] },
+    { nombre: "Derecho de los Bienes", abre: ["Cumplimiento e Incumplimiento de las Obligaciones Contractuales", "Seminario de Integración"] },
+    { nombre: "Normas Comunes a Todo Procedimiento", abre: ["Procedimientos Declarativos", "Seminario de Integración"] },
+    { nombre: "Fundamentos del Derecho Comercial y Títulos de Crédito", abre: ["Seminario de Integración"] },
     { nombre: "Inglés III", abre: ["Inglés IV"] }
   ],
+
   "Tercer Año - Quinto Semestre": [
     { nombre: "Derecho Administrativo I", abre: ["Derecho Administrativo II"] },
-    { nombre: "Cumplimiento e Incumplimiento de las Obligaciones Contractuales", abre: ["Responsabilidad Extracontractual"] },
+    { nombre: "Cumplimiento e Incumplimiento de las Obligaciones Contractuales", abre: ["Responsabilidad Extracontractual", "Contratos"] },
     { nombre: "Procedimientos Declarativos", abre: ["Ejecución y Recursos"] },
     { nombre: "Principios Fundamentales del Derecho Penal y de la Pena", abre: ["Parte General del Derecho Penal"] },
-    { nombre: "Seminario de Integración", abre: ["Consultorio Jurídico II"] },
-    { nombre: "Inglés IV", abre: [] }
+    { nombre: "Seminario de Integración", abre: ["Seminario de Doctrina y Jurisprudencia"] },
+    { nombre: "Inglés IV", abre: ["Seminario de Doctrina y Jurisprudencia"] }
   ],
+
   "Tercer Año - Sexto Semestre": [
-    { nombre: "Derecho Administrativo II", abre: [] },
-    { nombre: "Responsabilidad Extracontractual", abre: ["Contratos"] },
-    { nombre: "Ejecución y Recursos", abre: ["Derecho Procesal Penal"] },
+    { nombre: "Derecho Administrativo II", abre: ["Destrezas de Asesoría Legal"] },
+    { nombre: "Responsabilidad Extracontractual", abre: ["Seminario de Doctrina y Jurisprudencia"] },
+    { nombre: "Ejecución y Recursos", abre: ["Redacción Forense", "Derecho Procesal Penal"] },
     { nombre: "Parte General del Derecho Penal", abre: ["Parte Especial del Derecho Penal"] },
-    { nombre: "Derecho Societario", abre: ["Derecho, Innovación y Tecnología"] },
-    { nombre: "Derecho Laboral", abre: ["Derecho, Innovación y Tecnología"] }
+    { nombre: "Derecho Societario", abre: ["Derecho Tributario", "Destrezas de Asesoría Legal"] },
+    { nombre: "Derecho Laboral", abre: ["Seminario de Doctrina y Jurisprudencia"] }
   ],
+
   "Cuarto Año - Séptimo Semestre": [
-    { nombre: "Derecho Tributario", abre: [] },
-    { nombre: "Contratos", abre: ["Derecho de Familia"] },
-    { nombre: "Derecho Procesal Penal", abre: [] },
-    { nombre: "Parte Especial del Derecho Penal", abre: [] },
-    { nombre: "Derecho, Innovación y Tecnología", abre: [] },
-    { nombre: "Destrezas de Asesoría Legal", abre: ["Redacción Forense", "Negociación y Mediación", "Litigación Oral"] }
+    { nombre: "Derecho Tributario", abre: ["Seminario de Doctrina y Jurisprudencia"] },
+    { nombre: "Contratos", abre: ["Derecho de Familia", "Negociación y Mediación", "Seminario de Doctrina y Jurisprudencia", "Redacción Forense"] },
+    { nombre: "Derecho Procesal Penal", abre: ["Seminario de Doctrina y Jurisprudencia", "Litigación Oral"] },
+    { nombre: "Parte Especial del Derecho Penal", abre: ["Seminario de Doctrina y Jurisprudencia", "Derecho, Género e Inclusión"] },
+    { nombre: "Derecho, Innovación y Tecnología", abre: ["Seminario de Doctrina y Jurisprudencia"] },
+    { nombre: "Destrezas de Asesoría Legal", abre: ["Redacción Forense", "Negociación y Mediación", "Litigación Oral", "Seminario de Doctrina y Jurisprudencia"] }
   ],
+
   "Cuarto Año - Octavo Semestre": [
-    { nombre: "Ética Profesional", abre: ["Seminario de Investigación", "Derecho, Género e Inclusión"] },
-    { nombre: "Derecho de Familia", abre: ["Derecho Sucesorio"] },
-    { nombre: "Redacción Forense", abre: ["Consultorio Jurídico I"] },
+    { nombre: "Ética Profesional", abre: ["Consultorio Jurídico I"] },
+    { nombre: "Derecho de Familia", abre: ["Consultorio Jurídico I", "Derecho, Género e Inclusión", "Derecho Sucesorio"] },
+    { nombre: "Redacción Forense", abre: ["Consultorio Jurídico I", "Electivo I"] },
     { nombre: "Negociación y Mediación", abre: ["Consultorio Jurídico I"] },
-    { nombre: "Litigación Oral", abre: ["Consultorio Jurídico I"] }
+    { nombre: "Litigación Oral", abre: ["Consultorio Jurídico I"] },
+    { nombre: "Seminario de Doctrina y Jurisprudencia", abre: ["Actividad Final de Graduación", "Consultorio Jurídico I", "Seminario de Investigación"] }
   ],
+
   "Quinto Año - Noveno Semestre": [
-    { nombre: "Electivo I", abre: ["Electivo II", "Electivo III", "Electivo IV"] },
-    { nombre: "Derecho Sucesorio", abre: [] },
-    { nombre: "Seminario de Investigación", abre: [] },
-    { nombre: "Derecho, Género e Inclusión", abre: [] },
-    { nombre: "Consultorio Jurídico I", abre: [] }
+    { nombre: "Electivo I", abre: ["Electivo II", "Electivo III", "Electivo IV", "Actividad Final de Graduación"] },
+    { nombre: "Derecho Sucesorio", abre: ["Actividad Final de Graduación"] },
+    { nombre: "Seminario de Investigación", abre: ["Actividad Final de Graduación", "Consultorio Jurídico II"] },
+    { nombre: "Derecho, Género e Inclusión", abre: ["Actividad Final de Graduación", "Consultorio Jurídico II"] },
+    { nombre: "Consultorio Jurídico I", abre: ["Actividad Final de Graduación", "Consultorio Jurídico II"] }
   ],
+
   "Quinto Año - Décimo Semestre": [
     { nombre: "Electivo II", abre: [] },
     { nombre: "Electivo III", abre: [] },
@@ -106,12 +116,11 @@ function esInicial(nombre) {
   return !Object.values(malla).flat().some(r => r.abre.includes(nombre));
 }
 
-// ✅ Bloquea solo desde el ramo desmarcado hacia adelante en cadena
+// ✅ Bloquea SOLO desde el ramo desmarcado hacia adelante en cadena
 function bloquearEnCadena(ramoBase) {
   for (let semestre in malla) {
     malla[semestre].forEach(ramo => {
       if (ramo.abre.includes(ramoBase)) {
-        // Si ya no cumple requisitos, lo desmarcamos y seguimos en cadena
         if (!requisitosCumplidos(ramo.nombre)) {
           estados[ramo.nombre] = false;
           bloquearEnCadena(ramo.nombre);
