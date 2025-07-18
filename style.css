@@ -6,10 +6,10 @@ body {
   padding: 0;
 }
 
-/* Cabecera */
+/* Cabecera (más oscura para división visual) */
 header {
   text-align: center;
-  background-color: #fff0f6;
+  background-color: #ffccd9; /* Rosa pastel más oscuro */
   padding: 20px 0 10px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
